@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AşkLab: Flört Analiz Sistemi</title>
+<style>
+:root{--bg:#0d0221;--card:#1a0b3b;--ink:#f4e9ff;--mut:#a58fd0;--a:#ff2bd6;--b:#9b5cff;--c:#2de2e6;--bd:#3b1d78;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 20% 0,#2a0a5e,var(--bg) 60%) fixed;color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+body.an{--bg:#080b16;--card:#0f1424;--a:#7aa2ff;--b:#6c63ff;--c:#35e0a1;--bd:#223056;--mut:#8da0c8;background:#080b16;font-family:ui-monospace,Menlo,Consolas,monospace}
+.w{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0}
+body:not(.an) h1,body:not(.an) .px{font-family:"Courier New",monospace;text-transform:uppercase;letter-spacing:2px;text-shadow:0 0 8px var(--a),0 0 18px var(--b)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.tg{display:flex;border:1px solid var(--bd);border-radius:99px;overflow:hidden}
+.tg button{background:none;border:0;color:var(--mut);padding:8px 14px;cursor:pointer;font:inherit;font-size:14px}
+.tg button.on{background:linear-gradient(90deg,var(--b),var(--a));color:#fff}
+.tabs{display:flex;gap:6px;margin:14px 0;overflow-x:auto}
+.tabs button{flex:1;white-space:nowrap;background:var(--card);border:1px solid var(--bd);color:var(--mut);padding:10px;border-radius:10px;cursor:pointer;font:inherit;font-size:14px}
+.tabs button.on{color:#fff;border-color:var(--a);box-shadow:0 0 14px -2px var(--a)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
+body:not(.an) .card{box-shadow:0 0 22px -8px var(--b)}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+input,select,textarea{width:100%;background:#0000004d;border:1px solid var(--bd);color:var(--ink);padding:10px;border-radius:8px;font:inherit;font-size:16px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.go{width:100%;margin-top:16px;padding:14px;border:0;border-radius:10px;font:inherit;font-weight:700;font-size:16px;color:#fff;cursor:pointer;background:linear-gradient(90deg,var(--b),var(--a));box-shadow:0 0 18px -2px var(--a)}
+.big{font-size:56px;font-weight:800;line-height:1;background:linear-gradient(90deg,var(--c),var(--a));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bar{height:12px;background:#0006;border-radius:99px;overflow:hidden;margin:4px 0 10px}
+body:not(.an) .bar{border-radius:2px;border:1px solid var(--bd)}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--b),var(--a))}
+.bl{display:flex;justify-content:space-between;font-size:13px}
+.f{background:#0006;border:1px dashed var(--bd);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--c);overflow-x:auto;margin:8px 0}
+.t{display:inline-block;font-size:12px;padding:3px 8px;border-radius:99px;border:1px solid var(--bd);margin:2px 4px 2px 0}
+.g{border-color:var(--c);color:var(--c)}.r{border-color:var(--a);color:var(--a)}
+.ld{text-align:center;padding:30px 10px;color:var(--c)}
+.mut{color:var(--mut);font-size:13px}
+svg{width:100%;height:auto}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:10px 0 24px}
+:root:not([data-theme="light"]){color-scheme:dark}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:12px;background:#0004;border:1px solid var(--bd);color:var(--ink);border-radius:10px;font:inherit;cursor:pointer}.opt.on{border-color:var(--a);box-shadow:0 0 12px -2px var(--a)}.qq{font-size:18px;color:var(--ink)!important;margin:6px 0}textarea{min-height:80px}
+.tst{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:linear-gradient(90deg,var(--b),var(--a));color:#fff;padding:12px 18px;border-radius:12px;z-index:9;font-weight:700;box-shadow:0 0 24px var(--a);max-width:92%}.bd{display:inline-block;width:48%;margin:1%;padding:8px;border:1px solid var(--bd);border-radius:10px;font-size:13px;vertical-align:top}.bd.lk{opacity:.35;filter:grayscale(1)}
+</style></head><body>
+<div class="w">
+<div class="top"><h1 id="ttl">AŞKLAB</h1>
+<div class="tg"><button id="m1" class="on">🕹️ Arcade</button><button id="m2">📊 Analytic</button></div></div>
+<div id="hud" style="margin-top:8px"></div><div id="bp"></div>
+<div class="tabs" id="tabs"></div>
+<div id="form"></div>
+<div id="out"></div>
+<footer id="ft"></footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let mode='ar',tab='u',last=null;
+function h(s){let a=0xdeadbeef,b=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=Math.imul(a^c,2654435761);b=Math.imul(b^c,1597334677)}a=Math.imul(a^a>>>16,2246822507)^Math.imul(b^b>>>13,3266489909);b=Math.imul(b^b>>>16,2246822507)^Math.imul(a^a>>>13,3266489909);return 4294967296*(2097151&b)+(a>>>0)}
+function rng(s){let t=s%4294967296;return()=>{t=t+0x6D2B79F5|0;let r=Math.imul(t^t>>>15,1|t);r=r+Math.imul(r^r>>>7,61|r)^r;return((r^r>>>14)>>>0)/4294967296}}
+const pick=(a,r)=>a[Math.floor(r()*a.length)];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const burcN=['Koç','Boğa','İkizler','Yengeç','Aslan','Başak','Terazi','Akrep','Yay','Oğlak','Kova','Balık'];
+function burc(d){const [,m,g]=d.split('-').map(Number);const c=[20,19,21,21,21,22,23,23,23,23,22,22];let i=g<c[m-1]?m-2:m-1;return((i%12)+12+0)%12===11&&m===1?9:((i+12)%12)}
+function bz(i){return[0,4,8].includes(i)?0:[2,6,10].includes(i)?1:[1,5,9].includes(i)?2:3}
+function bScore(i,j){const a=bz(i),b=bz(j);if(a===b)return 86;if((a+b)===1||(a===2&&b===3)||(a===3&&b===2))return 79;if(Math.abs(i-j)===6)return 70;return 56}
+const Q={
+u:[['Mesajlaşma tarzınız?',['Sürekli yazarız','Günde birkaç kez','Sadece gerekince','Sesli mesaj mafyası']],['Konuşma konularınız?',['Her şeyi konuşabiliyoruz','Çoğu şeyi','Yüzeysel kalıyor','Sadece meme atıyoruz']],['Telefonda konuşma?',['Saatlerce','Arada','Nadiren','Hiç, hep yazışma']],['Tartışınca barışma?',['Hemen barışırız','Aynı gün','Birkaç gün','Küs kalma rekoru']],['Mizah seviyeniz?',['Aynı şeye gülüyoruz','Biraz farklı','Ben komiğim o değil','Kimse gülmüyor']],['Birbirinizi güldürme?',['Sürekli','Ara sıra','Sadece ben','Kimse']],['Plan yapmada kim karar verir?',['Ortak karar','Ben','O','Kimse, 3 saat "ne yesek" diyoruz']],['Sürprizlere bakış?',['İkimiz de severiz','Biri sever','Plansız yürüyemem','Sürprizden nefret']],['Hayat hedefleri?',['Aynı yöne bakıyor','Benzer','Farklı ama uyumlu','Kesişmiyor']],['Para/harcama tarzı?',['Uyumlu','Biraz farklı','Biri harcar biri biriktirir','Hesap kitap savaşı']]],
+s:[['Menüde ne seçerken?',['Hızlı kararlı','Biraz düşünür','Sonunda hep aynı şey','Karşı tarafın tabağından yer']],['Navigasyon tartışması?',['Hiç olmaz','Nadiren','Sık olur','"Ben daha iyi bilirim" modu']],['Ortak playlist?',['Uyumlu','Biraz kavga','Şarkı silme savaşı','Ayrı evrenler']],['Mesaja cevap süresi?',['Anında','Birkaç saat','Ertesi gün','"Görüldü" kulübü']],['Birbirinize ayırdığınız zaman?',['Yeterli','Biraz az','Çok az','Hep ekran başında']],['Aile/arkadaş çevresi uyumu?',['Seviyorlar','Nötr','Gergin','Savaş alanı']],['Kıskançlık düzeyi?',['Yok','Hafif','Sık','Telefon karıştırma']],['Gelecek planı konuşuluyor mu?',['Evet, net','Bazen','Kaçınılıyor','Konu kapalı']],['Özür dileme?',['Kolay','Zor','Çok zor','Asla']],['Ev işleri/sorumluluk?',['Eşit','Biraz dengesiz','Dengesiz','Sürekli kavga']],['Sosyal medyada ilişki?',['Rahat','Fark var','Tartışma konusu','Gizli ilişki']],['Tatil tercihi?',['Aynı','Orta','Farklı','Biri deniz biri dağ, asla']]],
+i:[['Soru soruyor mu?'],['Planı o öneriyor mu?'],['Sana özel espri yapıyor mu?'],['Hikayelerine bakıyor mu?'],['Gece geç saatte yazıyor mu?'],['Mesajlar kısa ve soğuk mu?'],['Hızlı cevap veriyor mu?'],['Kendiliğinden yazıyor mu?'],['Göz teması kuruyor mu?'],['Gelecek planlarından bahsediyor mu?'],['Hayatından detay paylaşıyor mu?'],['Emoji/espri kullanıyor mu?'],['Seni arkadaşlarına anlatıyor mu?'],['Konuşmayı hep sen mi bitiriyorsun?'],['Başkalarıyla flörtünü öne çıkarıyor mu?'],['Planları son anda iptal ediyor mu?']]};
+const BETA=[1.3,1.6,1.1,0.7,0.5,-1.4,1.2,1.4,.9,1.5,.8,.6,1.3,-1.1,-.9,-1.2];
+const ISIM=['Soru sorma','Plan önerme','Özel espri','Hikaye takibi','Gece mesajı','Soğuk/kısa mesaj','Hızlı cevap','Kendiliğinden yazma','Göz teması','Gelecek planı','Detay paylaşma','Emoji/espri','Seni anlatması','Konuşmayı sen bitirme','Başkasıyla flört','Plan iptali'];
+const NEG=[5,13,14,15];
+Q.u.push(['Birlikteyken telefonlar?',['Kenarda dururlar','Arada bakarız','Biri sürekli bakar','İkimiz de ekranla yaşıyoruz']],['Üzgün olduğunda diğeri ne yapar?',['Hemen anlar, yanında olur','Sorunca fark eder','Fark eder ama ne yapacağını bilmez','Fark etmez']],['Zor bir konuyu açma?',['Rahatça','Biraz tereddütle','Çok zor','Hiç açmayız']],['İç şakanız var mı?',['Bir sürü','Birkaç tane','Bir tane','Hiç']],['Sosyal ortamda birbirinizi?',['Tamamlıyoruz','Normal','Biri gölgede kalıyor','Ayrı köşelerdeyiz']],['Hafta sonu planı?',['Ortak buluruz','Dönüşümlü seçeriz','Hep aynı kişi karar verir','Plan çıkmaz']],['Ani plan değişikliği?',['Esneğiz','Biraz huysuzlanırız','Sinirlenirim','Dünyam yıkılır']],['Aile/çocuk hayali?',['Aynı','Benzer','Farklı ama konuşulabilir','Çelişiyor']],['Yaşam tarzı/şehir hayali?',['Aynı','Yakın','Farklı','Zıt']],['Alışkanlıklar (uyku, sigara, alkol)?',['Uyumlu','Küçük farklar','Belirgin farklar','Tam zıt']]);
+Q.s.push(['Kişisel alana saygı?',['Tam','Çoğu zaman','Bazen ihlal','Sürekli ihlal']],['Sorun çözme tarzı?',['Birlikte masaya otururuz','Biri toparlar','Konuyu kapatırız','Konu zehirleşir']],['Eski sevgililer?',['Sorun değil','Merak','Kıskançlık','Kriz konusu']],['Mesajda ton yanlış anlaşılır mı?',['Hiç','Nadiren','Sık','Her "tamam" kavga']],['Uyku/yaşam ritmi?',['Uyumlu','Biraz farklı','Çok farklı','Biri gece biri sabah']],['Hedeflere destek?',['Tam destek','Çoğunlukla','Pasif','Küçümseme']],['İlgi gösterme dili?',['Aynı','Anlıyoruz','Karışıyor','Hep yanlış anlıyoruz']],['Ayrılık lafı edildi mi?',['Hiç','Bir kez','Birkaç kez','Düzenli']]);
+Q.i.push(['İltifat ediyor mu?'],['Yazmak için bahane arıyor mu?'],['Anlattıklarını hatırlıyor mu?'],['Dokunma/yakınlık var mı?'],['Ortak ilgi arıyor mu?'],['Sadece canı sıkılınca mı yazıyor?'],['İlk mesajı hep sen mi atıyorsun?'],['Net cevap yerine kaçamak mı konuşuyor?']);
+BETA.push(1.0,1.1,1.3,1.2,.8,-1.3,-1,-1.2);ISIM.push('İltifat','Bahane bulma','Hatırlama','Yakınlık','Ortak ilgi','Sadece canı sıkılınca','Hep sen yazıyorsun','Kaçamak cevap');NEG.push(21,22,23);
+const PW=['mutlu','sev','harika','güzel','iyi','komik','tatlı','ilgili','özle','sarıl','romantik','güven','destek','anla','huzur','şahane','süper','aşık','kahkaha','gül','saygı'];
+const NW=['kavga','kıskan','soğuk','görmezden','yalan','kırıl','üzül','ghost','bırak','nefret','sinir','gergin','bencil','umursam','ilgisiz','kötü','terk','aldat','tartış','küs','yorgun','belirsiz'];
+function sent(t){const w=t.toLowerCase().split(/[^a-zçğıöşü]+/).filter(Boolean);let p=0,q=0;w.forEach((x,i)=>{const ng=['değil','yok','olmuyor','istemiyor'].includes(w[i+1]),a=PW.some(k=>x.startsWith(k)),b=NW.some(k=>x.startsWith(k));if(a)ng?q++:p++;else if(b)ng?p++:q++});return{s:clamp((p-q)/Math.sqrt(p+q+1)/1.5,-1,1),p,q,n:w.length}}
+function stepper(){const box=$('form').firstChild,go=$('go'),S=[...box.querySelectorAll('select')],tx=$('tx'),lab=go.textContent,info=document.createElement('div');let c=0;
+ [...box.childNodes].forEach(n=>{if(n!==go)info.appendChild(n)});const st=[info];
+ S.forEach(se=>{const d=document.createElement('div'),l=se.previousElementSibling;if(l&&l.tagName==='LABEL'){l.className='qq';d.appendChild(l)}se.style.display='none';d.appendChild(se);const o=document.createElement('div');
+  [...se.options].forEach((op,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=op.text;b.onclick=()=>{se.value=i;[...o.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');if(c<st.length-1)setTimeout(()=>sh(c+1),180)};o.appendChild(b)});d.appendChild(o);st.push(d)});
+ if(tx){const d=document.createElement('div'),l=tx.previousElementSibling;l.className='qq';d.appendChild(l);d.appendChild(tx);st.push(d)}
+ const nav=document.createElement('div');nav.innerHTML='<div class="bl"><span id="pg"></span><button id="bk" class="opt" style="width:auto;padding:4px 12px;margin:0">← Geri</button></div><div class="bar"><i id="pb"></i></div>';
+ box.insertBefore(nav,go);st.forEach(e=>box.insertBefore(e,go));
+ function sh(i){c=i;st.forEach((e,j)=>e.style.display=j===i?'':'none');$('pg').textContent=i?'Soru '+i+' / '+(st.length-1):'Bilgiler';$('pb').style.width=(i/(st.length-1)*100)+'%';$('bk').style.visibility=i?'visible':'hidden';go.style.display=(i===0||i===st.length-1)?'':'none';go.textContent=i===0?(mode==='ar'?'▶ TESTE BAŞLA':'Teste başla →'):lab}
+ go.onclick=()=>{c===0?sh(1):run()};$('bk').onclick=()=>sh(c-1);sh(0)}
+const SEB=['ortak playlist kavgası','"Ne yesek?" sorusunun 4. saatinde yaşanan kriz','mesajlara geç cevap verme','navigasyonla yön tartışması','"Tamam." mesajının yanlış yorumlanması','buzdolabındaki son dilim pizza','koltuğun sol tarafı meselesi','story\'ye bakıp cevap vermeme','Netflix\'te hangi diziyi izleyeceğinizi seçememe'];
+const AKO=['İlk kavga konunuz: yemek seçimi.','İlk kavganız: kim kime önce yazacak.','İlk kavga konunuz: "bana neden öyle baktın".'];
+function sel(id,t,o){return`<label>${t}</label><select id="${id}">${o.map((x,i)=>`<option value="${i}">${x}</option>`).join('')}</select>`}
+function renderForm(){
+ let f='';
+ if(tab==='u'){f=`<div class="row"><div><label>Senin adın</label><input id="n1" placeholder="Ayşe"></div><div><label>Doğum tarihin</label><input id="d1" type="date" value="2000-01-01"></div><div><label>Onun adı</label><input id="n2" placeholder="Mehmet"></div><div><label>Doğum tarihi</label><input id="d2" type="date" value="2000-06-15"></div></div>`+Q.u.map((q,i)=>sel('q'+i,q[0],q[1])).join('')}
+ if(tab==='s'){f=`<div class="row"><div><label>İsimleriniz (birlikte)</label><input id="n1" placeholder="Ayşe & Mehmet"></div><div><label>İlişki süresi (ay)</label><input id="mo" type="number" min="0" max="240" value="6"></div></div>`+sel('fr','Kavga sıklığı',['Neredeyse hiç','Ayda birkaç','Haftada birkaç','Her gün']) +Q.s.map((q,i)=>sel('q'+i,q[0],q[1])).join('')}
+ if(tab==='i'){f=`<label>Onun adı</label><input id="n1" placeholder="Mehmet">`+Q.i.map((q,i)=>sel('q'+i,q[0],['Evet, sık sık','Ara sıra','Hayır'])).join('')}
+ if(tab==='y')f=`<label>Onun adı</label><input id="n1" placeholder="Mehmet">`+sel('sl','Uyku düzeni',['Gece kuşu','Normal','Sabahçı'])+`<div class="row"><div><label>Meşgul başlangıç (saat)</label><input id="bs" type="number" min="0" max="23" value="9"></div><div><label>Meşgul bitiş (saat)</label><input id="be" type="number" min="0" max="23" value="17"></div><div><label>Son mesajdan beri (saat)</label><input id="ago" type="number" min="0" value="3"></div><div>`+sel('who','Son yazan',['Ben','O'])+`</div></div>`+sel('sp','Cevap hızı',['Hızlı','Normal','Yavaş'])+sel('wk','Bugün',['Hafta içi','Hafta sonu'])+sel('pf','Platform',['WhatsApp','Instagram DM','Telegram'])+sel('md','Son konuşmanın havası',['Çok iyi','Nötr','Gergin'])+sel('sn','Onun son görülmesi',['Şu an çevrimiçi','1 saat içinde','Birkaç saat önce','Bir gün veya fazlası'])+sel('yg','Onun işi/okulu ne kadar yoğun?',['Rahat','Orta','Çok yoğun']);
+ if(tab!=='y')f+=`<label>📝 Serbest not (isteğe bağlı): durumu kendi cümlelerinle anlat</label><textarea id="tx" placeholder="Örn: Çok tatlı ama son zamanlarda soğudu, mesajlara geç dönüyor..."></textarea>`;
+ $('form').innerHTML=`<div class="card">${f}<button class="go" id="go">${mode==='ar'?'▶ JETON AT, BAŞLAT':'Analizi çalıştır'}</button></div>`;
+ stepper();
+}
+function renderTabs(){const t=[['u','Uyum'],['s','Ne zaman ayrılırız?'],['i','Sana ilgisi var mı?'],['y','Ne zaman yazayım?']];$('tabs').innerHTML=t.map(x=>`<button data-k="${x[0]}" class="${tab===x[0]?'on':''}">${x[1]}</button>`).join('');
+ $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{tab=b.dataset.k;last=null;$('out').innerHTML='';renderTabs();renderForm()})}
+const v=id=>$(id)?$(id).value:'';
+const nm=t=>t.toLowerCase().replace(/[^a-zçğıöşü]/g,'');
+const gauss=r=>Math.sqrt(-2*Math.log(r()||1e-9))*Math.cos(6.2832*r());
+const pct=(a,p)=>{a=[...a].sort((x,y)=>x-y);return a[Math.floor(p*(a.length-1))]};
+const sg=x=>1/(1+Math.exp(-x));
+const lp=d=>{let t=d.replace(/-/g,'').split('').reduce((a,b)=>a+ +b,0);while(t>9)t=String(t).split('').reduce((a,b)=>a+ +b,0);return t};
+const ven=(b,d)=>(b+h(d+'v')%3+11)%12,moon=d=>h(d+'m')%12;
+const inW=(x,a,b)=>a<=b?(x>=a&&x<b):(x>=a||x<b);
+const fmt=x=>{const t=Math.round((((x%24)+24)%24)*4)/4%24;return String(Math.floor(t)).padStart(2,'0')+':'+String(Math.round((t%1)*60)).padStart(2,'0')};
+const N=2000;
+function calc(){
+ const n1=v('n1').trim().toLowerCase()||'anonim',T=sent(v('tx'));
+ if(tab==='u'){const n2=v('n2').trim().toLowerCase()||'gizemli',d1=v('d1'),d2=v('d2'),b1=burc(d1),b2=burc(d2);
+  const ns=[nm(n1),nm(n2)].sort(),r=rng(h(ns.join('|')+[d1,d2].sort().join()));
+  const A=new Set(ns[0]),B=new Set(ns[1]),jac=[...A].filter(c=>B.has(c)).length/(new Set([...A,...B]).size||1);
+  const vw=t=>t.split('').filter(c=>'aeıioöuü'.includes(c)).length/(t.length||1);
+  const Nn=clamp(42+30*jac+22*(1-Math.min(1,Math.abs(vw(ns[0])-vw(ns[1]))*3))+h(ns.join())%7,30,98);
+  const qs=Q.u.map((_,i)=>[100,80,60,45][+v('q'+i)]),gi=a=>a.reduce((x,i)=>x+qs[i],0)/a.length,L1=lp(d1),L2=lp(d2);
+  const C=[['Güneş burcu',bScore(b1,b2),.16],['Ay (duygusal)',bScore(moon(d1),moon(d2)),.12],['Venüs (romantik)',bScore(ven(b1,d1),ven(b2,d2)),.12],['Numeroloji ('+L1+'×'+L2+')',[96,70,78,64,82,58,74,66,60][Math.abs(L1-L2)%9],.1],['İsim harmonisi',Nn,.1],['Modalite',b1%3===b2%3?66:82,.06],['İletişim anketi',gi([0,1,2,3,10,11,12]),.1],['Mizah anketi',gi([4,5,13,14]),.08],['Karar dinamiği',gi([6,7,15,16]),.08],['Değerler anketi',gi([8,9,17,18,19]),.08]];
+  const cal=x=>clamp(.9*x+7,38,96),dr=[];
+  for(let i=0;i<N;i++)dr.push(clamp(cal(C.reduce((s,c)=>s+c[2]*(c[1]+6*gauss(r)),0))+6*T.s,38,96));
+  const U=dr.reduce((a,b)=>a+b)/N,sd=Math.sqrt(dr.reduce((a,b)=>a+(b-U)**2,0)/N),c=i=>C[i][1];
+  const sub=[['İletişim',(2*c(6)+c(1))/3],['Tutku',(2*c(2)+c(0))/3],['Güven',(c(4)+c(1)+c(8)+c(9))/4],['Mizah',(2*c(7)+c(3))/3]];
+  return{k:'u',tx:T,U,sd,lo:pct(dr,.025),hi:pct(dr,.975),C,sub,b1,b2,n1,n2,tehlike:pick(SEB,r)}}
+ if(tab==='s'){const fr=+v('fr'),mo=+v('mo'),r=rng(h(n1+mo+fr)),qv=Q.s.map((_,i)=>+v('q'+i));
+  const F=[['Kavga sıklığı',.38,fr],...qv.map((x,i)=>[Q.s[i][0],.05,x])];
+  const lh=F.reduce((a,f)=>a+f[1]*f[2],0)-(mo<3?.3:0)-.5*T.s,HR=Math.exp(lh),L0=10+Math.floor(r()*36),k=1.1+fr*.35,Le=L0*Math.pow(1/HR,1/k);
+  const md=[];for(let i=0;i<N;i++)md.push(L0*Math.pow(Math.LN2/(HR*Math.exp(.35*gauss(r))),1/k));
+  const med=pct(md,.5),S=t=>Math.exp(-Math.pow(t/Le,k)),d=new Date();d.setDate(d.getDate()+Math.max(1,Math.round((med-Math.min(mo,med*.9))*30)));
+  return{k:'s',tx:T,F,HR,L0,L:Le,k2:k,med,lo:pct(md,.05),hi:pct(md,.95),Sn:S(mo),P12:S(mo+12)/S(mo),t25:Le*Math.pow(-Math.log(.75),1/k),mo,date:d.toLocaleDateString('tr-TR'),sebep:pick(SEB,r),kavga:pick(AKO,r),n1}}
+ if(tab==='i'){const r=rng(h(n1+Q.i.map((_,i)=>v('q'+i)).join('')));
+  const xs=Q.i.map((_,i)=>[1,.4,0][+v('q'+i)]);let zb=Math.log(.35/.65)+.8*T.s,zl=-1.3+T.s;
+  xs.forEach((x,j)=>{zb+=BETA[j]*(x-.5)*.35;zl+=BETA[j]*x*.3});
+  const ds=[];for(let i=0;i<N;i++){let a=Math.log(.35/.65)+.8*T.s,b=-1.3+T.s;xs.forEach((x,j)=>{const be=BETA[j]+.25*gauss(r);a+=be*(x-.5)*.35;b+=be*x*.3});ds.push(.6*sg(a)+.4*sg(b))}
+  const ct=xs.map((x,j)=>BETA[j]*(x-.5)),mi=ct.reduce((m,c,j)=>Math.abs(c)>Math.abs(ct[m])?j:m,0);
+  return{k:'i',tx:T,P:.6*sg(zb)+.4*sg(zl),lo:pct(ds,.025),hi:pct(ds,.975),zb,zl,xs,ct,mi,n1}}
+ const sl=+v('sl'),bs=+v('bs'),be=+v('be'),ago=+v('ago'),who=+v('who'),sp=+v('sp'),wk=+v('wk'),yg=+v('yg'),pf=+v('pf'),md=+v('md'),sn=+v('sn'),r=rng(h(n1+bs+be+sl));
+ const pk=[[[23,1.6,1],[14.5,1.8,.4],[19,1.2,.5]],[[21,1.5,1],[12.5,1,.6],[8,1,.3]],[[20,1.6,.9],[12.3,1.2,.5],[7.5,1,.8]]][sl].map(p=>[p[0]+(r()-.5)*.6+wk,p[1],p[2]]);
+ pk.push([(be%24)+.5,1,.9]);const sw=[[4,11],[1,7.5],[22.5,5.5]][sl];
+ const dens=x=>{let t=0;pk.forEach(([m,s,a])=>{for(const o of[-24,0,24])t+=a*Math.exp(-((x-m+o)**2)/(2*s*s))});const q=((x%24)+24)%24;return t*(inW(q,bs,be)?([.3,.15,.05][yg]*(wk?4:1)):1)*(inW(q,sw[0],sw[1])?.03:1)};
+ const ps=[];for(let i=0;i<=96;i++)ps.push(dens(i/4));const mx=Math.max(...ps),D=new Date(),now=D.getHours()+D.getMinutes()/60;
+ const rec=dt=>(md===2?.75:1)*(who===0?1-Math.exp(-(ago+dt)/6):.55+.45*(1-Math.exp(-(ago+dt)/1.5)));
+ let bd=0,bv=-1;for(let dt=0;dt<=24;dt+=.25){const q=dens(now+dt)*rec(dt);if(q>bv){bv=q;bd=dt}}
+ const ns=dens(now)*rec(0)/mx,P30=sg(3.2*ns-1.4-.5*sp+(who?.5:0)+[.6,.3,-.1,-.5][sn]-.15*pf+(md===0?.3:md===2?-.4:0)),hr=(now+bd)%24;
+ const M=hr<11?['Günaydın, bu sabah beni mutlu eden tek şey kahve ve sensin','Sabah sabah aklıma düştün, kahve içtin mi?']:hr<17?['Öğle arası: bugün en saçma şey neydi, anlat bakalım','Şunu görünce aklıma sen geldin 😄']:hr<22?['Günün nasıl geçti? Benimki fena değildi ama seninki merak ettim','Akşam planın var mı yoksa kanepede mi bekliyorsun?']:['Uyumadan önce yazayım dedim, bugünün en iyi anı neydi?','Gece kuşları uyanık mı?'];
+ return{k:'y',ps,mx,now,hr,bd,ns,P30,pk,sw,bs,be,who,ago,msg:M,n1,r:rec(0)}}
+function verdict(P){return P>.78?['Net ilgili','Boss çoktan sana kilitlenmiş.']:P>.55?['Kararsız ama umutlu','Biraz daha sinyal lazım.']:P>.35?['Seni yedek tutuyor','Plan B moduna hoş geldin.']:['Arkadaş bölgesi','Level: Kardeş. Boss kapı kapanıyor.']}
+function bars(a){return a.map(x=>`<div class="bl"><span>${x[0]}</span><span>%${Math.round(x[1])}</span></div><div class="bar"><i style="width:${x[1]}%"></i></div>`).join('')}
+function chart(R){const W=640,H=170;const xp=t=>30+t/24*600,yp=t=>H-24-t/R.mx*(H-50);let p='M30 '+(H-24);R.ps.forEach((t,i)=>p+='L'+xp(i/4).toFixed(1)+' '+yp(t).toFixed(1));
+ return`<svg viewBox="0 0 ${W} ${H}"><path d="${p}L630 ${H-24}Z" fill="var(--b)" opacity=".35"/><path d="${p.slice(0)}" fill="none" stroke="var(--a)" stroke-width="2.5"/><line x1="${xp(R.now)}" x2="${xp(R.now)}" y1="8" y2="${H-24}" stroke="var(--mut)" stroke-dasharray="3"/><line x1="${xp(R.hr)}" x2="${xp(R.hr)}" y1="8" y2="${H-24}" stroke="var(--c)" stroke-width="2"/><text x="${xp(R.hr)+4}" y="20" fill="var(--c)" font-size="12">argmax ${fmt(R.hr)}</text><text x="${xp(R.now)+4}" y="${H-30}" fill="var(--mut)" font-size="11">şimdi</text>${[0,6,12,18,24].map(t=>`<text x="${xp(t)-8}" y="${H-6}" fill="var(--mut)" font-size="11">${t}</text>`).join('')}</svg>`}
+function weib(L,k,med){const W=640,H=200,T=Math.max(L*2.2,12);let p='';for(let i=0;i<=80;i++){const t=T*i/80,s=Math.exp(-Math.pow(t/L,k));p+=(i?'L':'M')+(40+t/T*(W-60)).toFixed(1)+' '+(H-30-s*(H-50)).toFixed(1)}
+ const mx=40+med/T*(W-60);return`<svg viewBox="0 0 ${W} ${H}"><path d="${p}" fill="none" stroke="var(--a)" stroke-width="3"/><line x1="40" y1="${H-30}" x2="${W-20}" y2="${H-30}" stroke="var(--bd)"/><line x1="${mx}" y1="10" x2="${mx}" y2="${H-30}" stroke="var(--c)" stroke-dasharray="4"/><text x="${mx+6}" y="24" fill="var(--c)" font-size="12">medyan ${med.toFixed(1)} ay</text><text x="40" y="${H-8}" fill="var(--mut)" font-size="11">t (ay)</text></svg>`}
+const tb=rows=>`<table style="width:100%;font-size:12px;border-collapse:collapse">${rows.map(r=>`<tr>${r.map(c=>`<td style="padding:2px 4px;border-bottom:1px solid var(--bd)">${c}</td>`).join('')}</tr>`).join('')}</table>`;
+function show(R){last=R;const ar=mode==='ar';let o='';
+ if(R.k==='u'){const U=Math.round(R.U);
+  o=ar?`<div class="px" style="text-align:center">${R.n1} ❤ ${R.n2}</div><div class="big" style="text-align:center">%${U}</div><div class="px" style="text-align:center;margin:8px 0">${U>=80?'★ PERFECT MATCH ★':U>=65?'CO-OP: ORTA MOD':'CO-OP: ZOR MOD'}</div>${bars(R.sub)}<div class="mut">9 gezegen/analiz katmanı · ${N} simülasyon</div><div>💀 <b>SON BOSS:</b> ${R.tehlike}</div><div class="mut">+50 XP kazandın</div>`
+  :`<div class="big">Û = ${R.U.toFixed(1)}</div><div class="mut">σ = ${R.sd.toFixed(2)} · %95 GA [${R.lo.toFixed(1)}, ${R.hi.toFixed(1)}] · Monte Carlo n=${N}</div><div class="f">Û = E[ cal( Σ wᵢ·(cᵢ + εᵢ) ) ], εᵢ ~ N(0, 6²)<br>cal(x) = 0.9x + 7 · ${burcN[R.b1]} × ${burcN[R.b2]}</div>${tb([['Bileşen','wᵢ','cᵢ','wᵢ·cᵢ'],...R.C.map(c=>[c[0],c[2],Math.round(c[1]),(c[2]*c[1]).toFixed(1)])])}<br>${bars(R.sub)}<div class="mut">Baskın risk: ${R.tehlike}. n=1 (sen).</div>`}
+ if(R.k==='s'){const hp=clamp(Math.round(R.Sn*100),3,100);
+  o=ar?`<div class="px">ÖMÜR BARI</div><div class="bar" style="height:22px"><i style="width:${hp}%"></i></div><div class="big">${R.date}</div><div class="px" style="margin:8px 0">KRİTİK TARİH: BOSS GELİYOR</div><div>💀 <b>SON BOSS:</b> ${R.sebep}</div><div>${R.kavga}</div><div class="mut">Sonraki 12 ay hayatta kalma şansı: %${Math.round(R.P12*100)}. Tavsiye: playlist'i ikiye böl, +20 can.</div>`
+  :`<div class="big">${R.med.toFixed(1)} ay</div><div class="mut">medyan ömür · %90 GA [${R.lo.toFixed(1)}, ${R.hi.toFixed(1)}] · kritik tarih ${R.date}</div>${weib(R.L,R.k2,R.med)}<div class="f">S(t|x) = exp(−HR·(t/λ₀)^k) · HR = exp(Σβᵢxᵢ) = ${R.HR.toFixed(2)}<br>λ₀ = ${R.L0} · k = ${R.k2.toFixed(2)} · frailty z ~ LogN(0, .35²)<br>P(+12 ay | şu an ${R.mo}. ay) = ${R.P12.toFixed(3)} · t₂₅ = ${R.t25.toFixed(1)} ay</div>${tb([['Kovaryat','β','x'],...R.F.map(f=>[f[0],f[1],f[2]])])}<div class="mut">Baskın risk: ${R.sebep}.</div>`}
+ if(R.k==='i'){const P=R.P,vd=verdict(P);
+  o=ar?`<div class="px">BOSS: ${R.n1}</div><div class="bar" style="height:22px"><i style="width:${P*100}%"></i></div><div class="big" style="text-align:center">${Math.round(P*100)} HP</div><div class="px" style="margin:8px 0">${vd[0]}</div><div>${vd[1]}</div><div style="margin-top:8px">${R.xs.map((x,i)=>`<span class="t ${(NEG.includes(i)?x<1:x>0.3)?'g':'r'}">${(NEG.includes(i)?x<1:x>0.3)?'⚡ POWER-UP':'☠ DEBUFF'}: ${ISIM[i]}</span>`).join('')}</div><div class="mut">Kritik sinyal: ${ISIM[R.mi]}</div>`
+  :`<div class="big">P = ${P.toFixed(2)}</div><div class="mut">${vd[0]} · %95 GA [${R.lo.toFixed(2)}, ${R.hi.toFixed(2)}] · MC n=${N}</div><div class="f">P = 0.6·σ(logit π₀ + 1.1Σβᵢ(xᵢ−½)) + 0.4·σ(β₀+Σβᵢxᵢ)<br>Bayes z=${R.zb.toFixed(2)} · Lojistik z=${R.zl.toFixed(2)} · π₀=0.35 · βᵢ~N(β̂,.25²)</div>${tb([['Sinyal','β','x','katkı'],...ISIM.map((n,i)=>[n,BETA[i],R.xs[i],R.ct[i].toFixed(2)])])}<div class="mut">En bilgilendirici sinyal: ${ISIM[R.mi]}</div>`}
+ if(R.k==='y'){const go=R.ns>.6&&R.bd<.5,cd=Math.max(0,R.bd),vd=go?'ŞİMDİ YAZ':R.ns>.35?'YAZILABİLİR (riskli)':'BEKLE';
+  o=ar?`<div class="px">MESAJ BUTONU</div><div class="big">${go?'AKTİF':Math.floor(cd)+'s '+Math.round((cd%1)*60)+'dk'}</div><div class="px" style="margin:8px 0">${vd}</div><div>En iyi pencere: <b>${fmt(R.hr)}</b></div><div class="mut">30 dk içinde cevap şansı: %${Math.round(R.P30*100)}</div><div style="margin-top:8px">${R.msg.map(m=>`<div class="t g" style="display:block;border-radius:8px;white-space:normal">💬 ${m}</div>`).join('')}</div>`
+  :`<div class="big">t* = ${fmt(R.hr)}</div><div class="mut">${vd} · P(cevap ≤30dk) = ${R.P30.toFixed(2)} · skor ${R.ns.toFixed(2)}</div>${chart(R)}<div class="f">P(h) = [Σ aᵢ·exp(−(h−μᵢ)²/2σᵢ²)] · 1[meşgul]·0.15 · 1[uyku]·0.03 · ρ(Δt)<br>t* = argmax P(h)·ρ(Δt) · ρ(Δt)=${R.r.toFixed(2)}</div>${tb([['Tepe','μ','σ','a'],...R.pk.map((p,i)=>['#'+(i+1),fmt(p[0]),p[1],p[2]])])}<div class="mut">Önerilen açılış: ${R.msg[0]}</div>`}
+ if(R.tx&&R.tx.n)o+=`<div class="f">${ar?'📝 METİN BONUSU':'NLP duygu skoru'}: ${R.tx.s>=0?'+':''}${R.tx.s.toFixed(2)} · olumlu ${R.tx.p} / olumsuz ${R.tx.q}</div>`;
+ o+=`<button class="go" id="sc">📸 Story kartı oluştur</button>`;
+ $('out').innerHTML=`<div class="card">${o}</div>`;$('sc').onclick=()=>card(R);$('out').scrollIntoView({behavior:'smooth'})}
+function run(){const R=calc();const ar=mode==='ar';
+ const msg=ar?['🪙 Jeton atılıyor...','Boss yükleniyor...','Kalp barı hesaplanıyor...']:['Regresyon katsayıları hesaplanıyor...','Monte Carlo (10.000 iterasyon)...','Güven aralığı kuruluyor...'];
+ let i=0;$('out').innerHTML=`<div class="card ld" id="ldm">${msg[0]}</div>`;
+ const t=setInterval(()=>{i++;if(i>=msg.length){clearInterval(t);show(R);award(R)}else $('ldm').textContent=msg[i]},900)}
+function setMode(m){mode=m;ST.modes[m]=1;chk();document.body.classList.toggle('an',m==='an');$('m1').classList.toggle('on',m==='ar');$('m2').classList.toggle('on',m==='an');
+ $('ttl').textContent=m==='ar'?'ASKLAB ARCADE':'AşkLab / Analytic';
+ $('ft').textContent=m==='ar'?'Sadece eğlence amaçlıdır. Gerçek hayat hile kodu kabul etmez.':'Bu model bilimsel geçerliliğe sahip değildir (ama çok güzel görünüyor).';
+ const f=document.querySelector('#form');if(f){const sv={};f.querySelectorAll('input,select,textarea').forEach(e=>sv[e.id]=e.value);renderForm();Object.keys(sv).forEach(k=>{if($(k))$(k).value=sv[k]})}
+ if(last)show(last)}
+$('m1').onclick=()=>setMode('ar');$('m2').onclick=()=>setMode('an');
+const BG=[['🐣','Çaylak','İlk analizini yaptın',t=>t.n>=1],['💘','Aşk Stajyeri','3 analiz',t=>t.n>=3],['🩺','Aşk Doktoru','5 analiz',t=>t.n>=5],['🧪','Laboratuvar Faresi','10 analiz',t=>t.n>=10],['🎯','Tam Set','4 modülü de denedin',t=>['u','s','i','y'].every(k=>t.mods[k])],['🔀','Çift Mod','Arcade ve Analytic kullandın',t=>t.modes.ar&&t.modes.an],['🏹','Kupid','%85+ uyum yakaladın',t=>t.hi],['🫠','Friendzone Gazisi','İlgi skoru %35 altı',t=>t.fz],['🔥','Kriz Uzmanı','Medyan ömrü 6 aydan kısa çıkardın',t=>t.kr],['✍️','Edebiyatçı','Serbest not yazdın',t=>t.tx],['🕐','Zaman Yolcusu','Ne zaman yazayım modülünü kullandın',t=>t.mods.y]];
+let ST={xp:0,n:0,mods:{},modes:{},hi:0,fz:0,kr:0,tx:0,bd:[]};
+try{Object.assign(ST,JSON.parse(localStorage.getItem('asklab')||'{}'))}catch(e){}
+function toast(t){const d=document.createElement('div');d.className='tst';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),3500)}
+function chk(){BG.forEach((b,i)=>{if(!ST.bd.includes(i)&&b[3](ST)){ST.bd.push(i);toast('🏅 Yeni rozet: '+b[0]+' '+b[1])}});try{localStorage.setItem('asklab',JSON.stringify(ST))}catch(e){}hud()}
+function hud(){const lv=Math.floor(ST.xp/100)+1;$('hud').innerHTML=`<div class="bl"><span>LV ${lv} · ${ST.xp} XP</span><button class="opt" id="bb" style="width:auto;padding:4px 10px;margin:0">🏅 Rozetler ${ST.bd.length}/${BG.length}</button></div><div class="bar"><i style="width:${ST.xp%100}%"></i></div>`;$('bb').onclick=()=>{$('bp').innerHTML=$('bp').innerHTML?'':`<div class="card">${BG.map((b,i)=>`<div class="bd ${ST.bd.includes(i)?'':'lk'}">${b[0]} <b>${b[1]}</b><br><span class="mut">${b[2]}</span></div>`).join('')}</div>`}}
+function award(R){ST.n++;ST.xp+=50;ST.mods[R.k]=1;if(R.k==='u'&&R.U>=85)ST.hi=1;if(R.k==='i'&&R.P<.35)ST.fz=1;if(R.k==='s'&&R.med<6)ST.kr=1;if(R.tx&&R.tx.n)ST.tx=1;toast('+50 XP');chk()}
+function wrap(c,t,x,y,w,lh){let l='';for(const a of t.split(' ')){const m=l+a+' ';if(c.measureText(m).width>w&&l){c.fillText(l.trim(),x,y);l=a+' ';y+=lh}else l=m}c.fillText(l.trim(),x,y);return y+lh}
+function summ(R){const ar=mode==='ar';
+ if(R.k==='u')return{t:R.n1+' ❤ '+R.n2,big:'%'+Math.round(R.U),sub:ar?(R.U>=80?'PERFECT MATCH':R.U>=65?'CO-OP: ORTA MOD':'CO-OP: ZOR MOD'):'%95 GA ['+R.lo.toFixed(0)+'–'+R.hi.toFixed(0)+']',l:R.sub.map(x=>x[0]+' %'+Math.round(x[1])).concat(['Son boss: '+R.tehlike])};
+ if(R.k==='s')return{t:'Ne zaman ayrılırız?',big:R.med.toFixed(1)+' ay',sub:'Kritik tarih: '+R.date,l:['Son boss: '+R.sebep,'12 ay hayatta kalma: %'+Math.round(R.P12*100)]};
+ if(R.k==='i'){const vd=verdict(R.P);return{t:R.n1+' sana ilgili mi?',big:'%'+Math.round(R.P*100),sub:vd[0],l:[vd[1],'Kritik sinyal: '+ISIM[R.mi]]}}
+ return{t:'Ne zaman yazmalıyım?',big:fmt(R.hr),sub:R.ns>.6&&R.bd<.5?'ŞİMDİ YAZ':R.ns>.35?'YAZILABİLİR':'BEKLE',l:['30 dk içinde cevap şansı %'+Math.round(R.P30*100),'"'+R.msg[0]+'"']}}
+function card(R){const ar=mode==='ar',W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d'),A=ar?'#ff2bd6':'#7aa2ff',C=ar?'#2de2e6':'#35e0a1',F=ar?'"Courier New",monospace':'ui-monospace,Consolas,monospace',g=c.createLinearGradient(0,0,0,H);
+ g.addColorStop(0,ar?'#0d0221':'#080b16');g.addColorStop(1,ar?'#3a0b7a':'#101a38');c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.strokeStyle=A+'66';c.lineWidth=2;for(let y=1400;y<H;y+=50){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}for(let x=-W;x<2*W;x+=120){c.beginPath();c.moveTo(W/2+(x-W/2)*.15,1400);c.lineTo(x,H);c.stroke()}
+ const S=summ(R);c.textAlign='center';c.shadowColor=A;c.shadowBlur=ar?30:0;
+ c.fillStyle=C;c.font='bold 44px '+F;c.fillText(ar?'★ ASKLAB ARCADE ★':'AŞKLAB / ANALYTIC',W/2,140);
+ c.fillStyle='#fff';c.font='bold 66px '+F;wrap(c,S.t,W/2,330,920,84);
+ c.fillStyle=A;c.font='bold 250px '+F;c.fillText(S.big,W/2,760);
+ c.fillStyle=C;c.font='bold 64px '+F;let y=wrap(c,S.sub,W/2,900,960,80)+40;
+ c.shadowBlur=0;c.fillStyle='#e8dcff';c.font='44px '+F;S.l.forEach(t=>{y=wrap(c,t,W/2,y,900,58)+16});
+ c.fillStyle='#a58fd0';c.font='32px '+F;c.fillText('Sadece eğlence amaçlıdır · AşkLab',W/2,H-80);
+ const im=new Image();im.src=cv.toDataURL('image/png');im.style.cssText='width:100%;max-width:360px;display:block;margin:10px auto;border-radius:12px';
+ if($('cd'))$('cd').remove();const d=document.createElement('div');d.className='card';d.id='cd';d.innerHTML='<div class="mut">Görsele basılı tut → kaydet (bilgisayarda sağ tık)</div>';d.appendChild(im);
+ const b=document.createElement('button');b.className='go';b.textContent='Paylaş';b.onclick=()=>cv.toBlob(bl=>{try{navigator.share({files:[new File([bl],'asklab.png',{type:'image/png'})],title:'AşkLab'}).catch(()=>{})}catch(e){toast('Paylaşım desteklenmiyor, görseli kaydet')}});
+ d.appendChild(b);$('out').appendChild(d);d.scrollIntoView({behavior:'smooth'})}
+renderTabs();setMode('ar');
+</script></body></html>
